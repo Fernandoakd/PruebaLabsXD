@@ -1,0 +1,193 @@
+<template>
+    <template if:true={showSpinner}>
+        <!-- Spinner -->
+        <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                <span class="slds-assistive-text">Espere un momento por favor</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </template>
+    <template if:false={showSpinner}>
+        <!--Modal-->
+        <template if:true={showModal}>
+            <c-mvno-_b2b-_cart-modal-cmp onclosing={handleDialogToggle} action={isEdit} registro={registro} opid={opId}>
+            </c-mvno-_b2b-_cart-modal-cmp>
+        </template>
+        <!--/Modal-->
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <!-- <a href="#" class="slds-card__header-link slds-truncate" title="Outer Card Header"> -->
+                            <span class="titulo">Carrito</span>
+                            <!-- </a> -->
+                        </h2>
+                    </div>
+                </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="conteiner slds-col">
+                    <!-- ACCORDION -->
+                    <lightning-accordion class="example-accordion" active-section-name={actives}
+                        allow-multiple-sections-open>
+                        <template for:each={productos} for:item="producto">
+                            <!-- PRODUCTO INDIVIDUAL -->
+                            <lightning-accordion-section class="product" key={producto.productId} name={producto.Id}
+                                label={producto.Name} > 
+                                <!-- CABECERA -->
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-size_3-of-12"></div>
+                                    <div class="slds-col slds-size_2-of-12">
+                                        <span>Cantidad Total</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-12">
+                                        <span>Precio Unico</span>
+                                    </div>
+                                    <div class= "slds-col slds-size_1-of-12">
+                                        <span>Precio Total Unico </span><br />
+                                    </div>
+                                    <div class= "slds-col slds-size_1-of-12">
+                                        <span>Precio Recurrente</span><br />
+                                    </div>
+                                    <div class= "slds-col slds-size_1-of-12">
+                                        <span>Precio Total Recurrente</span><br />
+                                    </div>
+                                    <div class="slds-col slds-size_3-of-12"></div>
+                                </div>
+                                <br/>
+                                <!-- PRODUCTOS PADRES -->
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-size_3-of-12"></div>
+                                    <div class="slds-col slds-size_2-of-12" >
+                                        <!-- <span>Cantidad Total</span><br /> -->
+                                        <lightning-input class="slds-size_5-of-12" type="number"
+                                            value={producto.Quantity}  variant="label-hidden"
+                                            onchange={changeQuantity} name={producto.Id}> <!-- value={producto.Quantity} name={producto.Id}-->
+                                        </lightning-input>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-12">
+                                        <!-- <span>Precio Unico</span><br /> -->
+                                        <span>{producto.UnitPrice}</span><!--producto.UnitPrice-->
+                                    </div>
+                                    <div class= "slds-col slds-size_1-of-12" >
+                                        <!-- <span>Precio Total Unico </span><br /> -->
+                                        <span>{producto.TotalPrice}</span><!--producto.TotalPrice-->
+                                    </div>
+                                    <div class= "slds-col slds-size_1-of-12">
+                                        <!-- <span>Precio Recurrente</span><br /> -->
+                                        <span>{producto.RecurringPrice}</span><!--producto.RecurringPrice-->
+                                    </div>
+                                    <div class= "slds-col slds-size_1-of-12">
+                                        <!-- <span>Precio Total Recurrente</span><br /> -->
+                                        <span>{producto.TotalRecurringPrice}</span><!--producto.TotalRecurringPrice-->
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-12"></div>
+                                    <!--Buttons-->
+                                    <div class="slds-col slds-size_2-of-12">
+                                        <lightning-button-icon icon-name="utility:delete" alternative-text="Delete"
+                                            title="Delete" name="delete" onclick={handleDialogToggle} value={producto}>
+                                        </lightning-button-icon>
+                                    </div>
+                                </div>
+                                <!--PRODUCTOS HIJOS-->
+                                <br/>
+                                <div if:true={producto.Child} for:each={producto.Child} key={producto.Child.Id} for:item="child">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_3-of-12">
+                                            <span class="product">{child.Name}</span>
+                                        </div>
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning-input class="slds-size_5-of-12" type="number"
+                                                value={child.Quantity} disabled variant="label-hidden"
+                                                onchange={changeQuantity} name={child.Id}><!--value={child.Quantity} name={child.Id}--><!--Solo lectura-->
+                                            </lightning-input>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-12" >
+                                            <span>{child.UnitPrice}</span><!--<span>{child.UnitPrice}</span>-->
+                                        </div>
+                                        <div class= "slds-col slds-size_1-of-12" >
+                                            <span>{child.TotalPrice}</span><!--<span>{child.TotalPrice}</span>-->
+                                        </div>
+                                        <div class= "slds-col slds-size_1-of-12">
+                                            <span>{child.RecurringPrice}</span><!--<span>{child.RecurringPrice}</span>-->
+                                        </div>
+                                        <div class= "slds-col slds-size_1-of-12">
+                                            <span>{child.TotalRecurringPrice}</span><!--<span>{child.TotalRecurringPrice}</span>-->
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-12"></div>
+                                        <!--Buttons-->
+                                        <div if:true={child.Attributes} class="slds-col slds-size_2-of-12">
+                                            <lightning-button-icon icon-name="utility:settings" alternative-text="Configure"
+                                                title="Configure" name="configure" onclick={handleDialogToggle} value={child}>
+                                            </lightning-button-icon>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div if:true={child.GrandChild} for:each={child.GrandChild} key={child.GrandChild.Id} for:item="grandChild">
+                                        <div class="slds-grid slds-wrap">
+                                            <br>
+                                            <div class="slds-col slds-size_3-of-12 product">
+                                                <span class="product">&emsp;&emsp;{grandChild.Name}</span>
+                                            </div>
+                                            <div class="slds-col slds-size_2-of-12">
+                                                <lightning-input class="slds-size_5-of-12" disabled type="number"
+                                                    value={grandChild.Quantity} variant="label-hidden"
+                                                    onchange={changeQuantity} name={grandChild.Id}><!--value={child.Quantity} name={child.Id}--><!--Solo lectura-->
+                                                </lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-12" >
+                                                <span>{grandChild.UnitPrice}</span><!--<span>{child.UnitPrice}</span>-->
+                                            </div>
+                                            <div class= "slds-col slds-size_1-of-12" >
+                                                <span>{grandChild.TotalPrice}</span><!--<span>{child.TotalPrice}</span>-->
+                                            </div>
+                                            <div class= "slds-col slds-size_1-of-12">
+                                                <span>{grandChild.RecurringPrice}</span><!--<span>{child.RecurringPrice}</span>-->
+                                            </div>
+                                            <div class= "slds-col slds-size_1-of-12">
+                                                <span>{grandChild.TotalRecurringPrice}</span><!--<span>{child.TotalRecurringPrice}</span>-->
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-12"></div>
+                                            <!--Buttons-->
+                                            <div if:true={grandChild.Attributes} class="slds-col slds-size_2-of-12">
+                                                <lightning-button-menu alternative-text="Show menu" variant="border-filled" menu-alignment="right">
+                                                    <lightning-menu-item icon-name="utility:settings" label="Configure" name="configure" onclick={handleDialogToggle} value={grandChild}></lightning-menu-item>
+                                                </lightning-button-menu>
+                                            </div>  
+                                        </div>
+                                        <br/>
+                                    </div>  
+                                </div>
+                            </lightning-accordion-section>
+                            <!-- TERMINA PRODUCTO INDIVIDUAL Y PRODUCTOS HIJOS -->
+                        </template>
+                    </lightning-accordion>
+                    <!-- AQUI TERMINAN LOS PRODUCTOS -->
+                </div>
+            </div>
+            <footer class="slds-card__footer">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_3-of-12">
+                        <span>Precio Recurrente</span><br />
+                        <span class="money">${currentOpp.EffectiveRecurringTotal__c}</span>
+                    </div>
+                    <div class="slds-col slds-size_3-of-12">
+                        <span>Subtotal</span><br />
+                        <span class="money">${currentOpp.EffectiveOneTimeTotal__c}</span>
+                    </div>
+                    <div class="slds-col slds-size_3-of-12">
+                        <span>Precio Total</span><br />
+                        <span class="money">${currentOpp.EffectiveOrderTotal__c}</span>
+                    </div>
+                    <div class="slds-col slds-size_3-of-12">
+                        <lightning-button variant="brand" label={buttonName} disabled={isSubmiting}
+                            onclick={saveOrder} class="slds-m-left_x-small"></lightning-button>
+                    </div>
+                </div>
+            </footer>
+        </article>
+    </template>
+</template>

@@ -1,0 +1,21 @@
+/* .lastfooter{
+    background-color: #00f;
+    bottom: 0;
+    position: fixed;
+    margin-bottom: 0.8rem;
+} */
+.conteiner {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    min-height: 60.5vh;
+    max-height: 60.5vh;
+}
+footer {
+    background-color: rgba(0, 68, 135, 1);
+    color: whitesmoke;
+    /* min-height: 3vh;
+    max-height: 3vh; */
+}
+.money {
+    font-weight: bold;
+}

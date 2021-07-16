@@ -1,0 +1,109 @@
+<template>
+    <section
+        role="dialog"
+        tabindex="-1"
+        class="slds-modal slds-fade-in-open slds-modal_small"
+        aria-labelledby="modal-heading-01"
+        aria-modal="true"
+        aria-hidden={accessibilityState}
+        aria-describedby="modal-content-id-1"
+        onkeydown={closeModal}
+    >
+        <!--Container-->
+        <div class="slds-modal__container">
+            <!--Header-->
+            <header class="slds-modal__header">
+                <lightning-button-icon
+                    icon-name="utility:close"
+                    size="large"
+                    variant="bare"
+                    alternative-text="Close the modal"
+                    aria-hidden="true"
+                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                    title="Cerrar modal"
+                    onclick={closeModal}
+                >
+                </lightning-button-icon>
+                <h2
+                    if:true={editAction}
+                    id="modal-heading-01"
+                    class="slds-modal__title slds-hyphenate"
+                >
+                    Detalles del producto
+                </h2>
+                <h2
+                    if:false={editAction}
+                    id="modal-heading-02"
+                    class="slds-modal__title slds-hyphenate"
+                >
+                    Eliminar producto
+                </h2>
+            </header>
+            <!--/Header-->
+            <!--Body-->
+            <div
+                class="slds-modal__content slds-p-around_medium slds-grid slds-wrap"
+                id="modal-content-id-1"
+            >
+                <template if:true={editAction}>
+                    <div
+                        for:each={cartItem}
+                        for:item="item"
+                        key={item.label}
+                        class="slds-col slds-size_1-of-1 slds-large-size_6-of-12 slds-p-left_x-small"
+                    >
+                        <lightning-input
+                            type="text"
+                            label={item.label}
+                            value={item.value}
+                            disabled
+                        ></lightning-input>
+                    </div>
+                    <div
+                        if:true={multiOptionsAttr}
+                        class="slds-col slds-size_1-of-1 slds-large-size_6-of-12 slds-p-left_x-small"
+                    >
+                        <lightning-combobox
+                            name="multiOptionsAttr"
+                            label="Color del Equipo"
+                            placeholder="Select Progress"
+                            options={multiOptionsAttr}
+                            onchange={handleColorChange}
+                        >
+                        </lightning-combobox>
+                    </div>
+                </template>
+                <template if:false={editAction}>
+                    <div
+                        class="slds-col slds-size_1-of-1 slds-large-size_6-of-12 slds-p-left_x-small slds-align_absolute-right"
+                    >
+                        ¿Esta seguro de que desea elminar el producto {registro.Name}?
+                    </div>
+                </template>
+            </div>
+            <!--/Body-->
+            <!--Footer-->
+            <footer if:true={editAction} class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick={closeModal}>
+                    Cancelar
+                </button>
+                <button id="save" class="slds-button slds-button_brand" onclick={updateCartProduct}>
+                    Guardar
+                </button>
+            </footer>
+            <footer if:false={editAction} class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick={closeModal}>No</button>
+                <button
+                    id="delete"
+                    class="slds-button slds-button_brand"
+                    onclick={deleteCartProduct}
+                >
+                    Si
+                </button>
+            </footer>
+            <!--/Footer-->
+        </div>
+        <!--/Container-->
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>
